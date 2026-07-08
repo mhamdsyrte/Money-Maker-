@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FileManagerApp.ViewModels"
+             x:Class="FileManagerApp.Views.TextEditorPage"
+             x:DataType="vm:TextEditorViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource BackgroundColor}"
+             FlowDirection="RightToLeft">
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding GoBackCommand}"/>
+    </Shell.BackButtonBehavior>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        
+        <!-- Toolbar -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto" 
+              BackgroundColor="{DynamicResource SurfaceColor}" Padding="10">
+            <HorizontalStackLayout Grid.Column="0" Spacing="10">
+                <Frame BackgroundColor="{DynamicResource PrimaryColor}" CornerRadius="5" Padding="8,4">
+                    <Label Text="{Binding Language}" FontSize="12" TextColor="White"/>
+                </Frame>
+                <Label Text="●" TextColor="{DynamicResource WarningColor}" FontSize="16"
+                       IsVisible="{Binding HasChanges}" VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+            
+            <Button Grid.Column="1" Text="A-" Command="{Binding DecreaseFontSizeCommand}"
+                    BackgroundColor="Transparent" TextColor="{DynamicResource TextPrimaryColor}"/>
+            <Label Grid.Column="2" Text="{Binding FontSize}" VerticalOptions="Center"
+                   TextColor="{DynamicResource TextSecondaryColor}" FontSize="12"/>
+            <Button Grid.Column="3" Text="A+" Command="{Binding IncreaseFontSizeCommand}"
+                    BackgroundColor="Transparent" TextColor="{DynamicResource TextPrimaryColor}"/>
+            <Button Grid.Column="4" Text="↔" Command="{Binding ToggleWordWrapCommand}"
+                    BackgroundColor="Transparent" 
+                    TextColor="{Binding WordWrap, Converter={StaticResource BoolToColor}}"/>
+            <Button Grid.Column="5" Text="💾" Command="{Binding SaveCommand}"
+                    BackgroundColor="{DynamicResource SuccessColor}" TextColor="White"
+                    CornerRadius="8" Padding="15,8"/>
+        </Grid>
+
+        <!-- Editor -->
+        <ScrollView Grid.Row="1">
+            <Editor Text="{Binding Content}"
+                    FontSize="{Binding FontSize}"
+                    FontFamily="JetBrainsMono"
+                    BackgroundColor="{DynamicResource BackgroundColor}"
+                    TextColor="{DynamicResource TextPrimaryColor}"
+                    Placeholder="اكتب هنا..."
+                    PlaceholderColor="{DynamicResource TextSecondaryColor}"
+                    AutoSize="TextChanges"
+                    FlowDirection="LeftToRight"
+                    Margin="10"/>
+        </ScrollView>
+
+        <!-- Status Bar -->
+        <Grid Grid.Row="2" ColumnDefinitions="*,*,*,*" 
+              BackgroundColor="{DynamicResource SurfaceColor}" Padding="10,8">
+            <Label Grid.Column="0" FontSize="11" TextColor="{DynamicResource TextSecondaryColor}">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="سطور: "/>
+                        <Span Text="{Binding LineCount}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Label Grid.Column="1" FontSize="11" TextColor="{DynamicResource TextSecondaryColor}">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="أحرف: "/>
+                        <Span Text="{Binding CharCount}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Label Grid.Column="2" Text="{Binding Language}" FontSize="11" 
+                   TextColor="{DynamicResource TextSecondaryColor}" HorizontalOptions="Center"/>
+            <Label Grid.Column="3" Text="UTF-8" FontSize="11" 
+                   TextColor="{DynamicResource TextSecondaryColor}" HorizontalOptions="End"/>
+        </Grid>
+
+    </Grid>
+</ContentPage>

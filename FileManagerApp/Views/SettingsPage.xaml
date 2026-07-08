@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FileManagerApp.ViewModels"
+             xmlns:models="clr-namespace:FileManagerApp.Models"
+             x:Class="FileManagerApp.Views.SettingsPage"
+             x:DataType="vm:SettingsViewModel"
+             Title="الإعدادات"
+             BackgroundColor="{DynamicResource BackgroundColor}"
+             FlowDirection="RightToLeft">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="15" Padding="15">
+
+            <!-- Theme Section -->
+            <Frame BackgroundColor="{DynamicResource SurfaceColor}" 
+                   CornerRadius="16" Padding="15" HasShadow="False">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="🎨 السمة" FontSize="18" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextPrimaryColor}"/>
+                    
+                    <CollectionView ItemsSource="{Binding Themes}" 
+                                   SelectionMode="Single"
+                                   SelectedItem="{Binding SelectedTheme}"
+                                   HeightRequest="120">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:ThemeColors">
+                                <Frame WidthRequest="90" HeightRequest="100" 
+                                       CornerRadius="12" Padding="8" HasShadow="False"
+                                       BackgroundColor="{Binding BackgroundColor}">
+                                    <VerticalStackLayout VerticalOptions="Center" Spacing="5">
+                                        <Label Text="{Binding Icon}" FontSize="28" HorizontalOptions="Center"/>
+                                        <Label Text="{Binding DisplayName}" FontSize="11" 
+                                               TextColor="{Binding TextPrimaryColor}"
+                                               HorizontalOptions="Center"/>
+                                    </VerticalStackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Accent Color -->
+            <Frame BackgroundColor="{DynamicResource SurfaceColor}" 
+                   CornerRadius="16" Padding="15" HasShadow="False">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="💎 لون التمييز" FontSize="18" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextPrimaryColor}"/>
+                    
+                    <FlexLayout Wrap="Wrap" JustifyContent="Start">
+                        <Frame BackgroundColor="#3b82f6" WidthRequest="45" HeightRequest="45" 
+                               CornerRadius="10" Margin="5" Padding="0">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectAccentColorCommand}" CommandParameter="#3b82f6"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                        <Frame BackgroundColor="#8b5cf6" WidthRequest="45" HeightRequest="45" 
+                               CornerRadius="10" Margin="5" Padding="0">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectAccentColorCommand}" CommandParameter="#8b5cf6"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                        <Frame BackgroundColor="#22c55e" WidthRequest="45" HeightRequest="45" 
+                               CornerRadius="10" Margin="5" Padding="0">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectAccentColorCommand}" CommandParameter="#22c55e"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                        <Frame BackgroundColor="#ef4444" WidthRequest="45" HeightRequest="45" 
+                               CornerRadius="10" Margin="5" Padding="0">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectAccentColorCommand}" CommandParameter="#ef4444"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                        <Frame BackgroundColor="#f59e0b" WidthRequest="45" HeightRequest="45" 
+                               CornerRadius="10" Margin="5" Padding="0">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectAccentColorCommand}" CommandParameter="#f59e0b"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                        <Frame BackgroundColor="#ec4899" WidthRequest="45" HeightRequest="45" 
+                               CornerRadius="10" Margin="5" Padding="0">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectAccentColorCommand}" CommandParameter="#ec4899"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                        <Frame BackgroundColor="#06b6d4" WidthRequest="45" HeightRequest="45" 
+                               CornerRadius="10" Margin="5" Padding="0">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectAccentColorCommand}" CommandParameter="#06b6d4"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                        <Frame BackgroundColor="#f97316" WidthRequest="45" HeightRequest="45" 
+                               CornerRadius="10" Margin="5" Padding="0">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectAccentColorCommand}" CommandParameter="#f97316"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                    </FlexLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Font Size -->
+            <Frame BackgroundColor="{DynamicResource SurfaceColor}" 
+                   CornerRadius="16" Padding="15" HasShadow="False">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="🔤 حجم الخط" FontSize="18" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextPrimaryColor}"/>
+                    
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Button Grid.Column="0" Text="A-" Command="{Binding DecreaseFontSizeCommand}"
+                                BackgroundColor="{DynamicResource BorderColor}" TextColor="White"
+                                CornerRadius="8" WidthRequest="50"/>
+                        <Label Grid.Column="1" Text="{Binding FontSize}" FontSize="24"
+                               TextColor="{DynamicResource TextPrimaryColor}"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                        <Button Grid.Column="2" Text="A+" Command="{Binding IncreaseFontSizeCommand}"
+                                BackgroundColor="{DynamicResource BorderColor}" TextColor="White"
+                                CornerRadius="8" WidthRequest="50"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- File Options -->
+            <Frame BackgroundColor="{DynamicResource SurfaceColor}" 
+                   CornerRadius="16" Padding="15" HasShadow="False">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="📁 خيارات الملفات" FontSize="18" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextPrimaryColor}"/>
+                    
+                    <!-- View Mode -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="وضع العرض" TextColor="{DynamicResource TextSecondaryColor}"
+                               VerticalOptions="Center"/>
+                        <HorizontalStackLayout Grid.Column="1" Spacing="5">
+                            <Button Text="⊞" 
+                                    BackgroundColor="{Binding ViewMode, Converter={StaticResource ViewModeToGridColor}}"
+                                    TextColor="White" CornerRadius="8" WidthRequest="45"
+                                    Command="{Binding ToggleViewModeCommand}"/>
+                            <Button Text="☰" 
+                                    BackgroundColor="{Binding ViewMode, Converter={StaticResource ViewModeToListColor}}"
+                                    TextColor="White" CornerRadius="8" WidthRequest="45"
+                                    Command="{Binding ToggleViewModeCommand}"/>
+                        </HorizontalStackLayout>
+                    </Grid>
+
+                    <!-- Show Hidden Files -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="إظهار الملفات المخفية" TextColor="{DynamicResource TextSecondaryColor}"
+                               VerticalOptions="Center"/>
+                        <Switch Grid.Column="1" IsToggled="{Binding ShowHiddenFiles}"
+                                OnColor="{DynamicResource PrimaryColor}"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Editor Options -->
+            <Frame BackgroundColor="{DynamicResource SurfaceColor}" 
+                   CornerRadius="16" Padding="15" HasShadow="False">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="✏️ خيارات المحرر" FontSize="18" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextPrimaryColor}"/>
+                    
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="حجم خط المحرر" TextColor="{DynamicResource TextSecondaryColor}"
+                               VerticalOptions="Center"/>
+                        <Stepper Grid.Column="1" Minimum="10" Maximum="32" Increment="2"
+                                Value="{Binding EditorFontSize}"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="التفاف النص" TextColor="{DynamicResource TextSecondaryColor}"
+                               VerticalOptions="Center"/>
+                        <Switch Grid.Column="1" IsToggled="{Binding EditorWordWrap}"
+                                OnColor="{DynamicResource PrimaryColor}"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="أرقام الأسطر" TextColor="{DynamicResource TextSecondaryColor}"
+                               VerticalOptions="Center"/>
+                        <Switch Grid.Column="1" IsToggled="{Binding EditorLineNumbers}"
+                                OnColor="{DynamicResource PrimaryColor}"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Language -->
+            <Frame BackgroundColor="{DynamicResource SurfaceColor}" 
+                   CornerRadius="16" Padding="15" HasShadow="False">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="🌐 اللغة" FontSize="18" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextPrimaryColor}"/>
+                    
+                    <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                        <Button Text="العربية 🇸🇦" 
+                                BackgroundColor="{Binding SelectedLanguage, Converter={StaticResource LangToArabicColor}}"
+                                TextColor="White" CornerRadius="10" Padding="20,10"
+                                Command="{Binding SelectLanguageCommand}" CommandParameter="ar"/>
+                        <Button Text="English 🇺🇸" 
+                                BackgroundColor="{Binding SelectedLanguage, Converter={StaticResource LangToEnglishColor}}"
+                                TextColor="White" CornerRadius="10" Padding="20,10"
+                                Command="{Binding SelectLanguageCommand}" CommandParameter="en"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Actions -->
+            <Frame BackgroundColor="{DynamicResource SurfaceColor}" 
+                   CornerRadius="16" Padding="15" HasShadow="False">
+                <VerticalStackLayout Spacing="12">
+                    <Button Text="🔄 إعادة تعيين الإعدادات" 
+                            Command="{Binding ResetSettingsCommand}"
+                            BackgroundColor="{DynamicResource WarningColor}"
+                            TextColor="White" CornerRadius="10"/>
+                    
+                    <Button Text="ℹ️ حول التطبيق" 
+                            Command="{Binding ShowAboutCommand}"
+                            BackgroundColor="{DynamicResource PrimaryColor}"
+                            TextColor="White" CornerRadius="10"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- About Card -->
+            <Frame BackgroundColor="{DynamicResource SurfaceColor}" 
+                   CornerRadius="16" Padding="20" HasShadow="False">
+                <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                    <Label Text="📁" FontSize="48" HorizontalOptions="Center"/>
+                    <Label Text="مدير الملفات Z-Pro" FontSize="20" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextPrimaryColor}" HorizontalOptions="Center"/>
+                    <Label Text="الإصدار 1.0.0" FontSize="12"
+                           TextColor="{DynamicResource TextSecondaryColor}" HorizontalOptions="Center"/>
+                    <Label Text="مجاني للجميع 💚" FontSize="12"
+                           TextColor="{DynamicResource TextSecondaryColor}" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

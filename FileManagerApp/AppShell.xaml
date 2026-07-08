@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="FileManagerApp.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:FileManagerApp.Views"
+    Shell.FlyoutBehavior="Flyout"
+    Shell.FlyoutBackgroundColor="{DynamicResource SurfaceColor}"
+    FlowDirection="RightToLeft">
+
+    <Shell.FlyoutHeader>
+        <Grid BackgroundColor="{DynamicResource PrimaryColor}" Padding="20" HeightRequest="150">
+            <VerticalStackLayout VerticalOptions="Center">
+                <Label Text="📁" FontSize="48" HorizontalOptions="Center"/>
+                <Label Text="مدير الملفات Z-Pro" 
+                       FontSize="20" 
+                       FontFamily="CairoBold"
+                       TextColor="White" 
+                       HorizontalOptions="Center"/>
+                <Label Text="الإصدار 1.0" 
+                       FontSize="12" 
+                       TextColor="#94a3b8" 
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <FlyoutItem Title="الملفات" Icon="folder.png">
+        <ShellContent ContentTemplate="{DataTemplate views:FileBrowserPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="الإعدادات" Icon="settings.png">
+        <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}" />
+    </FlyoutItem>
+
+    <!-- Route Registration -->
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid ColumnDefinitions="Auto,*" Padding="15,10" BackgroundColor="Transparent">
+                <Image Source="{Binding FlyoutIcon}" 
+                       WidthRequest="24" 
+                       HeightRequest="24" 
+                       VerticalOptions="Center"/>
+                <Label Grid.Column="1" 
+                       Text="{Binding Title}" 
+                       FontSize="16"
+                       FontFamily="CairoRegular"
+                       TextColor="{DynamicResource TextPrimaryColor}"
+                       VerticalOptions="Center"
+                       Margin="15,0,0,0"/>
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+
+</Shell>

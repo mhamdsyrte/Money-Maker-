@@ -1,0 +1,45 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install MAUI Android workload
+        run: dotnet workload install maui-android
+
+      - name: Restore dependencies
+        run: dotnet restore FileManagerApp.csproj
+
+      - name: Build APK (Release, unsigned)
+        run: dotnet publish FileManagerApp.csproj -f net8.0-android -c Release -p:AndroidPackageFormat=apk
+
+      - name: Locate APK
+        id: find_apk
+        shell: pwsh
+        run: |
+          $apk = Get-ChildItem -Path . -Recurse -Filter *-Signed.apk -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $apk) {
+            $apk = Get-ChildItem -Path . -Recurse -Filter *.apk | Select-Object -First 1
+          }
+          echo "apk_path=$($apk.FullName)" >> $env:GITHUB_OUTPUT
+          echo "Found APK: $($apk.FullName)"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FileManagerApp-apk
+          path: ${{ steps.find_apk.outputs.apk_path }}

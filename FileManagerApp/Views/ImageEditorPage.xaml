@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FileManagerApp.ViewModels"
+             x:Class="FileManagerApp.Views.ImageEditorPage"
+             x:DataType="vm:ImageEditorViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="#1a1a2e"
+             FlowDirection="RightToLeft">
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding GoBackCommand}"/>
+    </Shell.BackButtonBehavior>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        
+        <!-- Toolbar -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto,Auto" 
+              BackgroundColor="{DynamicResource SurfaceColor}" Padding="10">
+            <Label Grid.Column="0" Text="{Binding FileName}" FontSize="14" 
+                   TextColor="{DynamicResource TextPrimaryColor}" VerticalOptions="Center"
+                   LineBreakMode="TailTruncation"/>
+            
+            <Button Grid.Column="2" Text="🔍-" Command="{Binding ZoomOutCommand}"
+                    BackgroundColor="Transparent" TextColor="{DynamicResource TextPrimaryColor}"/>
+            <Label Grid.Column="3" VerticalOptions="Center" TextColor="{DynamicResource TextSecondaryColor}" FontSize="12">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="{Binding Scale, StringFormat='{0:P0}'}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Button Grid.Column="4" Text="🔍+" Command="{Binding ZoomInCommand}"
+                    BackgroundColor="Transparent" TextColor="{DynamicResource TextPrimaryColor}"/>
+            <Button Grid.Column="5" Text="↺" Command="{Binding RotateLeftCommand}"
+                    BackgroundColor="Transparent" TextColor="{DynamicResource TextPrimaryColor}"/>
+            <Button Grid.Column="6" Text="🎨" Command="{Binding ToggleEditorCommand}"
+                    BackgroundColor="{Binding ShowEditor, Converter={StaticResource BoolToAccent}}"
+                    TextColor="White" CornerRadius="8" Padding="12,8"/>
+        </Grid>
+
+        <!-- Image Display -->
+        <Grid Grid.Row="1" BackgroundColor="#0a0a1a">
+            <Image Source="{Binding ImageSource}"
+                   Aspect="AspectFit"
+                   Rotation="{Binding Rotation}"
+                   Scale="{Binding Scale}"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"/>
+        </Grid>
+
+        <!-- Editor Panel -->
+        <Frame Grid.Row="1" BackgroundColor="{DynamicResource SurfaceColor}"
+               CornerRadius="16" Margin="10" Padding="15"
+               HorizontalOptions="End" VerticalOptions="Center"
+               WidthRequest="280" IsVisible="{Binding ShowEditor}">
+            <ScrollView>
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="🎨 تحرير الصورة" FontSize="16" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextPrimaryColor}"/>
+
+                    <!-- Brightness -->
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="☀️ السطوع" TextColor="{DynamicResource TextSecondaryColor}"/>
+                            <Label Grid.Column="1" Text="{Binding Brightness, StringFormat='{0:P0}'}" 
+                                   TextColor="{DynamicResource TextPrimaryColor}"/>
+                        </Grid>
+                        <Slider Minimum="0" Maximum="2" Value="{Binding Brightness}"
+                                ThumbColor="{DynamicResource PrimaryColor}"
+                                MinimumTrackColor="{DynamicResource PrimaryColor}"/>
+                    </VerticalStackLayout>
+
+                    <!-- Contrast -->
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="🌗 التباين" TextColor="{DynamicResource TextSecondaryColor}"/>
+                            <Label Grid.Column="1" Text="{Binding Contrast, StringFormat='{0:P0}'}" 
+                                   TextColor="{DynamicResource TextPrimaryColor}"/>
+                        </Grid>
+                        <Slider Minimum="0" Maximum="2" Value="{Binding Contrast}"
+                                ThumbColor="{DynamicResource PrimaryColor}"
+                                MinimumTrackColor="{DynamicResource PrimaryColor}"/>
+                    </VerticalStackLayout>
+
+                    <!-- Saturation -->
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="🎨 التشبع" TextColor="{DynamicResource TextSecondaryColor}"/>
+                            <Label Grid.Column="1" Text="{Binding Saturation, StringFormat='{0:P0}'}" 
+                                   TextColor="{DynamicResource TextPrimaryColor}"/>
+                        </Grid>
+                        <Slider Minimum="0" Maximum="2" Value="{Binding Saturation}"
+                                ThumbColor="{DynamicResource PrimaryColor}"
+                                MinimumTrackColor="{DynamicResource PrimaryColor}"/>
+                    </VerticalStackLayout>
+
+                    <!-- Presets -->
+                    <Label Text="فلاتر جاهزة" TextColor="{DynamicResource TextSecondaryColor}" Margin="0,10,0,5"/>
+                    <FlexLayout Wrap="Wrap" JustifyContent="SpaceBetween">
+                        <Button Text="طبيعي" Command="{Binding ResetFiltersCommand}"
+                                BackgroundColor="{DynamicResource BorderColor}" TextColor="White"
+                                CornerRadius="8" FontSize="11" Padding="10,5" Margin="2"/>
+                        <Button Text="حار" Command="{Binding ApplyPresetCommand}" CommandParameter="warm"
+                                BackgroundColor="#f97316" TextColor="White"
+                                CornerRadius="8" FontSize="11" Padding="10,5" Margin="2"/>
+                        <Button Text="بارد" Command="{Binding ApplyPresetCommand}" CommandParameter="cool"
+                                BackgroundColor="#06b6d4" TextColor="White"
+                                CornerRadius="8" FontSize="11" Padding="10,5" Margin="2"/>
+                        <Button Text="رمادي" Command="{Binding ApplyPresetCommand}" CommandParameter="grayscale"
+                                BackgroundColor="#64748b" TextColor="White"
+                                CornerRadius="8" FontSize="11" Padding="10,5" Margin="2"/>
+                        <Button Text="عتيق" Command="{Binding ApplyPresetCommand}" CommandParameter="vintage"
+                                BackgroundColor="#a16207" TextColor="White"
+                                CornerRadius="8" FontSize="11" Padding="10,5" Margin="2"/>
+                        <Button Text="حيوي" Command="{Binding ApplyPresetCommand}" CommandParameter="vivid"
+                                BackgroundColor="#ec4899" TextColor="White"
+                                CornerRadius="8" FontSize="11" Padding="10,5" Margin="2"/>
+                    </FlexLayout>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Frame>
+
+        <!-- Status Bar -->
+        <Grid Grid.Row="2" BackgroundColor="{DynamicResource SurfaceColor}" Padding="15,10">
+            <Label Text="{Binding ImageInfo}" FontSize="12" 
+                   TextColor="{DynamicResource TextSecondaryColor}"
+                   HorizontalOptions="Center"/>
+        </Grid>
+
+    </Grid>
+</ContentPage>

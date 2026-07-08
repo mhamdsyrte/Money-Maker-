@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Converters -->
+    <local:InverseBoolConverter x:Key="InverseBool" xmlns:local="clr-namespace:FileManagerApp.Converters"/>
+    <local:BoolToViewIconConverter x:Key="BoolToViewIcon" xmlns:local="clr-namespace:FileManagerApp.Converters"/>
+    <local:IntToInverseBoolConverter x:Key="IntToInverseBool" xmlns:local="clr-namespace:FileManagerApp.Converters"/>
+    <local:NullToBoolConverter x:Key="NullToBool" xmlns:local="clr-namespace:FileManagerApp.Converters"/>
+    <local:BoolToCutCopyTextConverter x:Key="BoolToCutCopyText" xmlns:local="clr-namespace:FileManagerApp.Converters"/>
+    <local:BoolToColorConverter x:Key="BoolToColor" xmlns:local="clr-namespace:FileManagerApp.Converters"/>
+    <local:BoolToAccentConverter x:Key="BoolToAccent" xmlns:local="clr-namespace:FileManagerApp.Converters"/>
+    <local:BoolToPlayIconConverter x:Key="BoolToPlayIcon" xmlns:local="clr-namespace:FileManagerApp.Converters"/>
+    <local:ViewModeToGridColorConverter x:Key="ViewModeToGridColor" xmlns:local="clr-namespace:FileManagerApp.Converters"/>
+    <local:ViewModeToListColorConverter x:Key="ViewModeToListColor" xmlns:local="clr-namespace:FileManagerApp.Converters"/>
+    <local:LangToArabicColorConverter x:Key="LangToArabicColor" xmlns:local="clr-namespace:FileManagerApp.Converters"/>
+    <local:LangToEnglishColorConverter x:Key="LangToEnglishColor" xmlns:local="clr-namespace:FileManagerApp.Converters"/>
+
+    <!-- Default Styles -->
+    <Style TargetType="Page" ApplyToDerivedTypes="True">
+        <Setter Property="BackgroundColor" Value="{DynamicResource BackgroundColor}"/>
+    </Style>
+
+    <Style TargetType="Label">
+        <Setter Property="TextColor" Value="{DynamicResource TextPrimaryColor}"/>
+        <Setter Property="FontFamily" Value="CairoRegular"/>
+    </Style>
+
+    <Style TargetType="Button">
+        <Setter Property="FontFamily" Value="CairoRegular"/>
+    </Style>
+
+    <Style TargetType="Entry">
+        <Setter Property="TextColor" Value="{DynamicResource TextPrimaryColor}"/>
+        <Setter Property="PlaceholderColor" Value="{DynamicResource TextSecondaryColor}"/>
+        <Setter Property="BackgroundColor" Value="{DynamicResource SurfaceColor}"/>
+    </Style>
+
+    <Style TargetType="Editor">
+        <Setter Property="TextColor" Value="{DynamicResource TextPrimaryColor}"/>
+        <Setter Property="PlaceholderColor" Value="{DynamicResource TextSecondaryColor}"/>
+        <Setter Property="BackgroundColor" Value="{DynamicResource BackgroundColor}"/>
+    </Style>
+
+    <Style TargetType="SearchBar">
+        <Setter Property="TextColor" Value="{DynamicResource TextPrimaryColor}"/>
+        <Setter Property="PlaceholderColor" Value="{DynamicResource TextSecondaryColor}"/>
+        <Setter Property="BackgroundColor" Value="{DynamicResource SurfaceColor}"/>
+    </Style>
+
+</ResourceDictionary>

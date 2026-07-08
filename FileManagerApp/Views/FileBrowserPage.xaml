@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FileManagerApp.ViewModels"
+             xmlns:models="clr-namespace:FileManagerApp.Models"
+             x:Class="FileManagerApp.Views.FileBrowserPage"
+             x:DataType="vm:FileBrowserViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{DynamicResource BackgroundColor}"
+             FlowDirection="RightToLeft">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="🔍" Command="{Binding SearchCommand}"/>
+        <ToolbarItem Text="➕📁" Command="{Binding CreateFolderCommand}"/>
+        <ToolbarItem Text="➕📄" Command="{Binding CreateFileCommand}"/>
+        <ToolbarItem Text="{Binding IsGridView, Converter={StaticResource BoolToViewIcon}}" Command="{Binding ToggleViewModeCommand}"/>
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+        
+        <!-- Search Bar -->
+        <SearchBar Grid.Row="0"
+                   Placeholder="بحث..."
+                   Text="{Binding SearchQuery}"
+                   SearchCommand="{Binding SearchCommand}"
+                   BackgroundColor="{DynamicResource SurfaceColor}"
+                   TextColor="{DynamicResource TextPrimaryColor}"
+                   PlaceholderColor="{DynamicResource TextSecondaryColor}"
+                   Margin="10"/>
+
+        <!-- Path & Navigation -->
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto,Auto" Padding="10,0" BackgroundColor="{DynamicResource SurfaceColor}">
+            <Button Grid.Column="0" Text="⬅" Command="{Binding GoBackCommand}" 
+                    IsEnabled="{Binding CanGoBack}"
+                    BackgroundColor="Transparent" TextColor="{DynamicResource TextPrimaryColor}"/>
+            <Label Grid.Column="1" Text="{Binding CurrentPath}" 
+                   FontSize="12" TextColor="{DynamicResource TextSecondaryColor}"
+                   VerticalOptions="Center" LineBreakMode="TailTruncation"/>
+            <Button Grid.Column="2" Text="⬆" Command="{Binding GoUpCommand}"
+                    BackgroundColor="Transparent" TextColor="{DynamicResource TextPrimaryColor}"/>
+            <Button Grid.Column="3" Text="🏠" Command="{Binding GoHomeCommand}"
+                    BackgroundColor="Transparent" TextColor="{DynamicResource TextPrimaryColor}"/>
+        </Grid>
+
+        <!-- Loading Indicator -->
+        <ActivityIndicator Grid.Row="2" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                          Color="{DynamicResource PrimaryColor}" VerticalOptions="Center"/>
+
+        <!-- Empty State -->
+        <VerticalStackLayout Grid.Row="2" IsVisible="{Binding Files.Count, Converter={StaticResource IntToInverseBool}}"
+                            VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
+            <Label Text="📂" FontSize="64" HorizontalOptions="Center"/>
+            <Label Text="المجلد فارغ" FontSize="20" TextColor="{DynamicResource TextPrimaryColor}" HorizontalOptions="Center"/>
+            <Label Text="لا توجد ملفات هنا" FontSize="14" TextColor="{DynamicResource TextSecondaryColor}" HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+
+        <!-- Grid View -->
+        <CollectionView Grid.Row="2" 
+                        ItemsSource="{Binding Files}"
+                        SelectionMode="None"
+                        IsVisible="{Binding IsGridView}">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="3" HorizontalItemSpacing="8" VerticalItemSpacing="8"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:FileItem">
+                    <Frame BackgroundColor="{DynamicResource SurfaceColor}" 
+                           BorderColor="{DynamicResource BorderColor}"
+                           CornerRadius="12" Padding="10" HasShadow="False" Margin="5">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FileBrowserViewModel}}, Path=OpenItemCommand}"
+                                                CommandParameter="{Binding .}"/>
+                        </Frame.GestureRecognizers>
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="{Binding Icon}" FontSize="36" HorizontalOptions="Center"/>
+                            <Label Text="{Binding Name}" FontSize="12" 
+                                   TextColor="{DynamicResource TextPrimaryColor}"
+                                   HorizontalOptions="Center" LineBreakMode="TailTruncation" MaxLines="2"/>
+                            <Label Text="{Binding SizeFormatted}" FontSize="10" 
+                                   TextColor="{DynamicResource TextSecondaryColor}"
+                                   HorizontalOptions="Center" IsVisible="{Binding IsDirectory, Converter={StaticResource InverseBool}}"/>
+                            <Label Text="⭐" FontSize="12" HorizontalOptions="End" IsVisible="{Binding IsFavorite}"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- List View -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Files}"
+                        SelectionMode="None"
+                        IsVisible="{Binding IsGridView, Converter={StaticResource InverseBool}}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:FileItem">
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="حذف" BackgroundColor="{DynamicResource DangerColor}"
+                                          Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FileBrowserViewModel}}, Path=DeleteItemCommand}"
+                                          CommandParameter="{Binding .}"/>
+                                <SwipeItem Text="تغيير الاسم" BackgroundColor="{DynamicResource WarningColor}"
+                                          Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FileBrowserViewModel}}, Path=RenameItemCommand}"
+                                          CommandParameter="{Binding .}"/>
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+                        <SwipeView.LeftItems>
+                            <SwipeItems>
+                                <SwipeItem Text="نسخ" BackgroundColor="{DynamicResource PrimaryColor}"
+                                          Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FileBrowserViewModel}}, Path=CopyItemCommand}"
+                                          CommandParameter="{Binding .}"/>
+                                <SwipeItem Text="مفضلة" BackgroundColor="{DynamicResource SecondaryColor}"
+                                          Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FileBrowserViewModel}}, Path=ToggleFavoriteCommand}"
+                                          CommandParameter="{Binding .}"/>
+                                <SwipeItem Text="استخراج" BackgroundColor="#16a34a"
+                                          IsVisible="{Binding IsArchive}"
+                                          Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FileBrowserViewModel}}, Path=ExtractItemCommand}"
+                                          CommandParameter="{Binding .}"/>
+                                <SwipeItem Text="ضغط ZIP" BackgroundColor="#7c3aed"
+                                          Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FileBrowserViewModel}}, Path=CompressItemCommand}"
+                                          CommandParameter="{Binding .}"/>
+                            </SwipeItems>
+                        </SwipeView.LeftItems>
+                        <Frame BackgroundColor="{DynamicResource SurfaceColor}" 
+                               BorderColor="Transparent" CornerRadius="8" Padding="12" HasShadow="False" Margin="5,2">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FileBrowserViewModel}}, Path=OpenItemCommand}"
+                                                    CommandParameter="{Binding .}"/>
+                            </Frame.GestureRecognizers>
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                                <Label Grid.Column="0" Text="{Binding Icon}" FontSize="28" VerticalOptions="Center"/>
+                                <VerticalStackLayout Grid.Column="1" Margin="12,0" VerticalOptions="Center">
+                                    <Label Text="{Binding Name}" FontSize="14" TextColor="{DynamicResource TextPrimaryColor}" LineBreakMode="TailTruncation"/>
+                                    <Label Text="{Binding DateFormatted}" FontSize="11" TextColor="{DynamicResource TextSecondaryColor}"/>
+                                </VerticalStackLayout>
+                                <Label Grid.Column="2" Text="{Binding SizeFormatted}" FontSize="11" 
+                                       TextColor="{DynamicResource TextSecondaryColor}" VerticalOptions="Center"
+                                       IsVisible="{Binding IsDirectory, Converter={StaticResource InverseBool}}"/>
+                                <Label Grid.Column="3" Text="⭐" FontSize="14" VerticalOptions="Center" Margin="8,0,0,0"
+                                       IsVisible="{Binding IsFavorite}"/>
+                            </Grid>
+                        </Frame>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Clipboard Indicator -->
+        <Frame Grid.Row="3" BackgroundColor="{DynamicResource PrimaryColor}" 
+               CornerRadius="8" Padding="10" Margin="10"
+               IsVisible="{Binding ClipboardItem, Converter={StaticResource NullToBool}}">
+            <Grid ColumnDefinitions="*,Auto">
+                <Label Grid.Column="0" TextColor="White" FontSize="12">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{Binding IsCutOperation, Converter={StaticResource BoolToCutCopyText}}"/>
+                            <Span Text=": "/>
+                            <Span Text="{Binding ClipboardItem.Name}"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Button Grid.Column="1" Text="📋 لصق" Command="{Binding PasteCommand}"
+                        BackgroundColor="White" TextColor="{DynamicResource PrimaryColor}"
+                        CornerRadius="5" Padding="10,5"/>
+            </Grid>
+        </Frame>
+
+    </Grid>
+</ContentPage>

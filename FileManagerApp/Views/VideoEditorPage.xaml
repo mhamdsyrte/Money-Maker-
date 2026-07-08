@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FileManagerApp.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="FileManagerApp.Views.VideoEditorPage"
+             x:DataType="vm:VideoEditorViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="#0a0a0a"
+             FlowDirection="RightToLeft">
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding GoBackCommand}"/>
+    </Shell.BackButtonBehavior>
+
+    <Grid RowDefinitions="Auto,*,Auto,Auto">
+        
+        <!-- Toolbar -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" 
+              BackgroundColor="{DynamicResource SurfaceColor}" Padding="15,10">
+            <Label Grid.Column="0" Text="{Binding FileName}" FontSize="14" 
+                   TextColor="{DynamicResource TextPrimaryColor}" VerticalOptions="Center"
+                   LineBreakMode="TailTruncation"/>
+            <Picker Grid.Column="1" Title="السرعة" SelectedIndex="2"
+                    TextColor="{DynamicResource TextPrimaryColor}">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>0.25x</x:String>
+                        <x:String>0.5x</x:String>
+                        <x:String>1x</x:String>
+                        <x:String>1.5x</x:String>
+                        <x:String>2x</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+        </Grid>
+
+        <!-- Video Player Area -->
+        <Grid Grid.Row="1" BackgroundColor="#000">
+            <toolkit:MediaElement x:Name="mediaElement"
+                                 Source="{Binding FilePath}"
+                                 ShouldAutoPlay="False"
+                                 ShouldShowPlaybackControls="False"
+                                 HorizontalOptions="Fill"
+                                 VerticalOptions="Fill"/>
+            
+            <!-- Play Button Overlay -->
+            <Frame BackgroundColor="#00000080" CornerRadius="40" 
+                   WidthRequest="80" HeightRequest="80"
+                   HorizontalOptions="Center" VerticalOptions="Center"
+                   Padding="0" HasShadow="False">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding TogglePlayPauseCommand}"/>
+                </Frame.GestureRecognizers>
+                <Label Text="{Binding IsPlaying, Converter={StaticResource BoolToPlayIcon}}" 
+                       FontSize="36" TextColor="White"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Frame>
+        </Grid>
+
+        <!-- Playback Controls -->
+        <Grid Grid.Row="2" BackgroundColor="{DynamicResource SurfaceColor}" Padding="15">
+            <VerticalStackLayout Spacing="10">
+                <!-- Timeline -->
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Label Grid.Column="0" Text="{Binding CurrentPositionFormatted}" 
+                           FontSize="12" TextColor="{DynamicResource TextSecondaryColor}"/>
+                    <Slider Grid.Column="1" Minimum="0" Maximum="100" Value="30"
+                            ThumbColor="{DynamicResource PrimaryColor}"
+                            MinimumTrackColor="{DynamicResource PrimaryColor}"
+                            MaximumTrackColor="{DynamicResource BorderColor}"
+                            Margin="10,0"/>
+                    <Label Grid.Column="2" Text="{Binding DurationFormatted}" 
+                           FontSize="12" TextColor="{DynamicResource TextSecondaryColor}"/>
+                </Grid>
+
+                <!-- Control Buttons -->
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
+                    <Button Text="⏮" Command="{Binding SkipBackwardCommand}"
+                            BackgroundColor="Transparent" TextColor="{DynamicResource TextPrimaryColor}"
+                            FontSize="24"/>
+                    <Button Text="⏪" Command="{Binding SkipBackwardCommand}"
+                            BackgroundColor="Transparent" TextColor="{DynamicResource TextPrimaryColor}"
+                            FontSize="20"/>
+                    <Frame BackgroundColor="{DynamicResource PrimaryColor}" 
+                           CornerRadius="30" WidthRequest="60" HeightRequest="60" Padding="0">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding TogglePlayPauseCommand}"/>
+                        </Frame.GestureRecognizers>
+                        <Label Text="{Binding IsPlaying, Converter={StaticResource BoolToPlayIcon}}" 
+                               FontSize="24" TextColor="White"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Frame>
+                    <Button Text="⏩" Command="{Binding SkipForwardCommand}"
+                            BackgroundColor="Transparent" TextColor="{DynamicResource TextPrimaryColor}"
+                            FontSize="20"/>
+                    <Button Text="⏭" Command="{Binding SkipForwardCommand}"
+                            BackgroundColor="Transparent" TextColor="{DynamicResource TextPrimaryColor}"
+                            FontSize="24"/>
+                </HorizontalStackLayout>
+
+                <!-- Volume -->
+                <Grid ColumnDefinitions="Auto,*" Margin="0,5,0,0">
+                    <Label Grid.Column="0" Text="🔊" FontSize="18" VerticalOptions="Center"
+                           TextColor="{DynamicResource TextSecondaryColor}"/>
+                    <Slider Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding Volume}"
+                            ThumbColor="{DynamicResource SuccessColor}"
+                            MinimumTrackColor="{DynamicResource SuccessColor}"
+                            MaximumTrackColor="{DynamicResource BorderColor}"
+                            Margin="10,0"/>
+                </Grid>
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- Editing Tools -->
+        <Grid Grid.Row="3" BackgroundColor="{DynamicResource SurfaceColor}" 
+              Padding="15" IsVisible="{Binding ShowControls}">
+            <HorizontalStackLayout Spacing="15" HorizontalOptions="Center">
+                <VerticalStackLayout>
+                    <Label Text="✂️ قص" FontSize="11" TextColor="{DynamicResource TextSecondaryColor}"
+                           HorizontalOptions="Center"/>
+                    <Grid ColumnDefinitions="Auto,*,Auto" WidthRequest="150">
+                        <Label Text="{Binding TrimStart, StringFormat='{0:F0}%'}" FontSize="10" 
+                               TextColor="{DynamicResource TextSecondaryColor}"/>
+                        <Slider Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding TrimStart}"
+                                ThumbColor="{DynamicResource WarningColor}"/>
+                        <Label Grid.Column="2" Text="{Binding TrimEnd, StringFormat='{0:F0}%'}" FontSize="10" 
+                               TextColor="{DynamicResource TextSecondaryColor}"/>
+                    </Grid>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout>
+                    <Label Text="☀️ سطوع" FontSize="11" TextColor="{DynamicResource TextSecondaryColor}"
+                           HorizontalOptions="Center"/>
+                    <Slider WidthRequest="100" Minimum="0" Maximum="2" Value="{Binding Brightness}"
+                            ThumbColor="{DynamicResource PrimaryColor}"/>
+                </VerticalStackLayout>
+
+                <Button Text="💾 تصدير" BackgroundColor="{DynamicResource SuccessColor}"
+                        TextColor="White" CornerRadius="8" Padding="15,10"/>
+            </HorizontalStackLayout>
+        </Grid>
+
+    </Grid>
+</ContentPage>
