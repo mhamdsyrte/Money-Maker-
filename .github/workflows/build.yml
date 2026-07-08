@@ -1,0 +1,31 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+      
+      - name: Install MAUI Workload
+        run: dotnet workload install maui
+      
+      - name: Restore dependencies
+        run: dotnet restore
+      
+      - name: Publish Android APK
+        run: dotnet publish -f net8.0-android -c Release
+      
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release
+          path: bin/Release/net8.0-android/publish/*.apk
